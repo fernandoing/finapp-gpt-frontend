@@ -1,0 +1,13 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+
+}
+
+.logo-container {
+  align-items: flex-start;
+}
+
+.logo {
+  height: 100px; /* Adjust based on your preference */
+}
