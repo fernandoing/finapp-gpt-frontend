@@ -20,10 +20,12 @@ function App() {
 
     // POST request to Flask server
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`${API_URL}/get_response`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `${token}`
         },
         body: JSON.stringify({ user_input: messageText }),
       });
