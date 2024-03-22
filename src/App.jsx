@@ -49,9 +49,9 @@ function App() {
 
   return (
     <div className="App container mx-auto px-4 py-10 flex flex-col min-h-screen">
-      <div className="logo-container self-start mb-8">
-        <img src={logo} alt="Logo" className="logo" /> {/* For PNG/JPG */}
-        {/* If using SVG as a component: <Logo className="logo" /> */}
+      <div className="logo-container flex items-center self-start mb-8">
+        <img src={logo} alt="Logo" className="logo mr-4" /> {/* Adjust this line if needed */}
+        <h1 className="text-xl font-bold">AI Finance Cloud</h1> {/* App name added here */}
       </div>
       <div className="flex flex-col flex-1 max-w-prose mx-auto">
         <Chat messages={messages} />

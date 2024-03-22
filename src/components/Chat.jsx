@@ -12,7 +12,7 @@ const Chat = ({ messages }) => {
           key={index}
           className={`w-full flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}>
           <div
-            className={`inline-block p-2 rounded-lg text-white ${msg.isUser ? 'chat-user' : 'chat-bot'} break-words max-w-prose`}>
+            className={`inline-block p-2 rounded-lg text-white ${msg.isUser ? 'bg-blue-500' : 'bg-gray-500'} break-words max-w-prose`}>
             {/* Split the message by newlines and map each line to a paragraph or a span followed by a <br /> */}
             {msg.text.split('\n').map((line, lineIndex) => (
               <React.Fragment key={lineIndex}>
