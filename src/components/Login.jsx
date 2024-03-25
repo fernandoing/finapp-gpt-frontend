@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MdError } from 'react-icons/md';
 import logo from '../assets/FinApp.png';
 
@@ -29,7 +29,7 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#060606]">
+    <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="max-w-md w-full space-y-8">
         <div className="flex flex-col items-center">
           <img src={logo} alt="Logo" className="h-40 w-40" /> 
@@ -39,9 +39,9 @@ function Login() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-200">
             Or{' '}
-            <a href="#" className="font-medium text-indigo-500 hover:text-indigo-400" onClick={() => navigate('/register')}>
+            <Link to="/register" className="font-medium text-indigo-500 hover:text-indigo-400">
               create your account
-            </a>
+            </Link>
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
