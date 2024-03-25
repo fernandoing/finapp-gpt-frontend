@@ -5,6 +5,7 @@ const Chat = ({ messages }) => {
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
   return (
     <div className="overflow-y-auto flex-1 p-4 space-y-2">
       {messages.map((msg, index) => (
@@ -14,7 +15,7 @@ const Chat = ({ messages }) => {
           <div
             className={`inline-block p-2 rounded-lg text-white ${msg.isUser ? 'bg-blue-500' : 'bg-gray-500'} break-words max-w-prose`}>
             {/* Split the message by newlines and map each line to a paragraph or a span followed by a <br /> */}
-            {msg.text.split('\n').map((line, lineIndex) => (
+            {msg.text && msg.text.split('\n').map((line, lineIndex) => (
               <React.Fragment key={lineIndex}>
                 {line}
                 <br />
