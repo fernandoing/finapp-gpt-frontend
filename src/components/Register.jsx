@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/FinApp.png';
 
 const LOGIN = import.meta.env.VITE_API_LOGIN;
@@ -35,7 +35,7 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#060606]">
+    <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="max-w-md w-full space-y-8">
         <div className="flex flex-col items-center">
           <img src={logo} alt="Logo" className="h-40 w-40" />
@@ -101,13 +101,11 @@ function Register() {
             </button>
           </div>
           <div className="text-center">
-            <button
-              type="button"
-              onClick={() => navigate('/')}
+            <Link to="/"
               className="font-medium text-indigo-500 hover:text-indigo-400"
             >
               Return to Main Page
-            </button>
+            </Link>
           </div>
         </form>
       </div>
