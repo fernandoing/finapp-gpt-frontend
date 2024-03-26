@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: finapp-gpt-frontend
+    build: .
+    image: finapp-gpt-frontend:1.0
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - VITE_API_URL=${VITE_API_URL}
+      - VITE_API_LOGIN=${VITE_API_LOGIN}
+    restart: unless-stopped
