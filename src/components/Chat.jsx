@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 
-const Chat = ({ messages }) => {
+const Chat = ({ messages, isLoading }) => {
   const endOfMessagesRef = useRef(null);
+  
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -14,7 +15,6 @@ const Chat = ({ messages }) => {
           className={`w-full flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}>
           <div
             className={`inline-block p-2 rounded-lg text-white ${msg.isUser ? 'bg-blue-500' : 'bg-gray-500'} break-words max-w-prose`}>
-            {/* Split the message by newlines and map each line to a paragraph or a span followed by a <br /> */}
             {msg.text && msg.text.split('\n').map((line, lineIndex) => (
               <React.Fragment key={lineIndex}>
                 {line}
@@ -24,6 +24,15 @@ const Chat = ({ messages }) => {
           </div>
         </div>
       ))}
+      
+      {isLoading && (
+        <div className="w-full flex justify-start animate-pulse">
+          <div className="inline-block p-2 rounded-lg bg-gray-500">
+            <span className="block h-2 bg-gray-300 rounded"></span>
+          </div>
+        </div>
+      )}
+      
       <div ref={endOfMessagesRef} />
     </div>
   );

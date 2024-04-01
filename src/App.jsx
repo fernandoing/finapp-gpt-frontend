@@ -31,9 +31,8 @@ function App() {
   const navigate = useNavigate();
   const welcomeMessage = { text: "🌟 Welcome to your personal AI Financial Advisor!\n I'm here to help you with advice, budgeting, and tracking expenses. Just tell me what you need – whether it's creating a budget or getting financial tips.\n How can I assist you today?", isUser: false };
   const [messages, setMessages] = useState([welcomeMessage]);
-  console.log("HolaApp")
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    console.log("holaeffect")
     fetchPreviousMessages(token)
       .then(previousMessages => {
         setMessages(prevMessages => [...prevMessages, ...previousMessages]);
@@ -42,11 +41,10 @@ function App() {
   }, []);
 
   const handleSendMessage = async (messageText) => {
-    // Add message to chat
     const newMessage = { text: messageText, isUser: true };
     setMessages(messages => [...messages, newMessage]);
+    setIsLoading(true);
 
-    // POST request to Flask server
     try {
       const response = await fetch(`${API_URL}/message`, {
         method: 'POST',
@@ -63,15 +61,17 @@ function App() {
 
       const data = await response.json();
 
-      // Add GPT model's response to chat
       setMessages(messages => [...messages, { text: data.response, isUser: false }]);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
+
+    } finally {
+      setIsLoading(false); 
     }
   };
 
   const handleClearMessages = () => {
-    setMessages([]); // Clear the messages state
+    setMessages([]); 
     setMessages(messages => [...messages, welcomeMessage]);
 
   };
@@ -83,7 +83,6 @@ function App() {
 
   return (
     <div className="App container mx-auto px-4 py-10 flex flex-col min-h-screen">
-      {/* Adjust this div to use flex, justify-between to space out the items */}
       <div className="flex items-center justify-between w-full mb-8">
         <Link to="/" className="flex items-center cursor-pointer">
           <img src={logo} alt="Logo" className="logo mr-4" />
@@ -96,7 +95,7 @@ function App() {
       </div>
 
       <div className="flex flex-col flex-1 max-w-prose mx-auto">
-        <Chat messages={messages} />
+        <Chat messages={messages} isLoading={isLoading} />
         <div className="mt-auto mb-0">
           <ChatInput onSendMessage={handleSendMessage} onClearMessages={handleClearMessages} />
         </div>
