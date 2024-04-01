@@ -97,7 +97,7 @@ function App() {
       <div className="flex flex-col flex-1 max-w-prose mx-auto">
         <Chat messages={messages} isLoading={isLoading} />
         <div className="mt-auto mb-0">
-          <ChatInput onSendMessage={handleSendMessage} onClearMessages={handleClearMessages} />
+          <ChatInput onSendMessage={handleSendMessage} onClearMessages={handleClearMessages} isLoading={isLoading}/>
         </div>
       </div>
     </div>
