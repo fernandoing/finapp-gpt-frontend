@@ -1,73 +1,81 @@
 import React, { useState, useEffect } from 'react';
-import { MdSend, MdKeyboardVoice, MdMicOff, MdDelete } from 'react-icons/md'; // Importing icons
+import { MdSend, MdKeyboardVoice, MdMicOff, MdDelete } from 'react-icons/md';
 
-// This component represents the input field and buttons for sending messages and toggling voice input
-const ChatInput = ({ onSendMessage, onClearMessages }) => {
-  const [message, setMessage] = useState(''); // State for storing the input message
-  const [listening, setListening] = useState(false); // State for tracking if voice input is active
-  const [speechRecognition, setSpeechRecognition] = useState(null); // State for storing the SpeechRecognition object
+const ChatInput = ({ onSendMessage, onClearMessages, isLoading }) => {
+  const [message, setMessage] = useState('');
+  const [listening, setListening] = useState(false);
+  const [speechRecognition, setSpeechRecognition] = useState(null);
 
   useEffect(() => {
-    // Check if the browser supports SpeechRecognition API
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
-      const recognition = new SpeechRecognition(); // Create a new instance of SpeechRecognition
-      recognition.continuous = false; // Restart after capturing a phrase
-      recognition.interimResults = false; // We don't need interim results
-      recognition.lang = 'en-US'; // Set language to Spanish (Spain)
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
       recognition.onresult = (event) => {
-        const last = event.results.length - 1; // Get the last part of the result
-        const transcript = event.results[last][0].transcript.trim(); // Get the transcribed message
-        onSendMessage(transcript); // Directly send the message
-        setListening(false); // Stop listening
+        const last = event.results.length - 1;
+        const transcript = event.results[last][0].transcript.trim();
+        onSendMessage(transcript);
+        setListening(false);
       };
-      recognition.onend = () => {
-        setListening(false); // Update listening state when voice input ends
-      };
-      setSpeechRecognition(recognition); // Store the SpeechRecognition object in state
+      recognition.onend = () => setListening(false);
+      setSpeechRecognition(recognition);
     }
   }, [onSendMessage]);
 
-  // Function to toggle voice input
   const toggleListening = () => {
     if (listening) {
-      speechRecognition.stop(); // Stop voice input if already listening
+      speechRecognition.stop();
     } else {
-      speechRecognition.start(); // Start voice input if not listening
+      speechRecognition.start();
     }
-    setListening(!listening); // Toggle the listening state
+    setListening(!listening);
   };
 
-  // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!message.trim()) return; // Ignore empty messages
-    onSendMessage(message); // Send the message
-    setMessage(''); // Clear the input field
+    if (!message.trim()) return;
+    onSendMessage(message);
+    setMessage('');
   };
 
+  // Classes for disabled appearance
+  const disabledClass = isLoading ? "opacity-50 cursor-not-allowed" : "";
+  
   return (
     <form onSubmit={handleSubmit} className="flex gap-2 mt-4 items-center w-full">
-      <button type="button" onClick={onClearMessages} className="bg-red-500 text-white rounded-lg p-2">
-        <MdDelete /> {/* Using delete icon */}
+      <button
+        type="button"
+        onClick={onClearMessages}
+        className={`bg-red-500 text-white rounded-lg p-2 ${disabledClass}`}
+        disabled={isLoading}
+      >
+        <MdDelete />
       </button>
       <input
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        className="flex-1 p-2 border rounded-lg"
+        className={`flex-1 p-2 border rounded-lg ${disabledClass}`}
         placeholder="Type your message here..."
+        disabled={isLoading}
       />
-      <button type="submit" className="bg-blue-500 text-white rounded-lg p-2">
-        <MdSend /> {/* Using send icon */}
+      <button
+        type="submit"
+        className={`bg-blue-500 text-white rounded-lg p-2 ${disabledClass}`}
+        disabled={isLoading}
+      >
+        <MdSend />
       </button>
       {speechRecognition ? (
         <button
           type="button"
           onClick={toggleListening}
-          className={`p-2 rounded-lg ${listening ? 'bg-red-500' : 'bg-green-500'} text-white`}
+          className={`p-2 rounded-lg ${listening ? 'bg-red-500' : 'bg-green-500'} text-white ${disabledClass}`}
+          disabled={isLoading}
         >
-          {listening ? <MdMicOff /> : <MdKeyboardVoice />} {/* Toggle between voice icons */}
+          {listening ? <MdMicOff /> : <MdKeyboardVoice />}
         </button>
       ) : (
         <p className="text-red-500">Voice input not supported</p>
