@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MdSend, MdKeyboardVoice, MdMicOff, MdDelete } from 'react-icons/md';
 
 const ChatInput = ({ onSendMessage, onClearMessages, isLoading }) => {
   const [message, setMessage] = useState('');
   const [listening, setListening] = useState(false);
   const [speechRecognition, setSpeechRecognition] = useState(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -24,6 +25,12 @@ const ChatInput = ({ onSendMessage, onClearMessages, isLoading }) => {
     }
   }, [onSendMessage]);
 
+  useEffect(() => {
+    if (!isLoading && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isLoading]);
+
   const toggleListening = () => {
     if (listening) {
       speechRecognition.stop();
@@ -40,7 +47,6 @@ const ChatInput = ({ onSendMessage, onClearMessages, isLoading }) => {
     setMessage('');
   };
 
-  // Classes for disabled appearance
   const disabledClass = isLoading ? "opacity-50 cursor-not-allowed" : "";
   
   return (
@@ -54,6 +60,7 @@ const ChatInput = ({ onSendMessage, onClearMessages, isLoading }) => {
         <MdDelete />
       </button>
       <input
+        ref={inputRef}
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
