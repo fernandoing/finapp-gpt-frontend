@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/FinApp.png';
+import config from '../config';
 
-const LOGIN = import.meta.env.VITE_API_LOGIN;
+const { VITE_API_LOGIN } = config;
+const LOGIN = VITE_API_LOGIN;
 
 function Register() {
   const [username, setUsername] = useState('');

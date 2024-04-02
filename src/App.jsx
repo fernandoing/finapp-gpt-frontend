@@ -5,8 +5,10 @@ import ChatInput from './components/ChatInput';
 import logo from './assets/FinApp.png';
 import { MdLogout } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
+import config from './config';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const { VITE_API_URL } = config;
+const API_URL = VITE_API_URL;
 
 async function fetchPreviousMessages(token) {
   const response = await fetch(`${API_URL}/chats`, {

@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MdError } from 'react-icons/md';
 import logo from '../assets/FinApp.png';
+import config from '../config';
 
+const { VITE_API_LOGIN } = config;
 
-const LOGIN = import.meta.env.VITE_API_LOGIN;
+const LOGIN = VITE_API_LOGIN;
 
 function Login() {
   const [username, setUsername] = useState('');
