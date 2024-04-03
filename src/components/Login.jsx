@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MdError } from 'react-icons/md';
 import logo from '../assets/FinApp.png';
-
-
-const LOGIN = import.meta.env.VITE_API_LOGIN;
+import { login } from '../services/chatService';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -14,14 +12,9 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch(`${LOGIN}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
-    const data = await res.json();
-    if (data.authenticated) {
-      localStorage.setItem('token', data.Authorization);
+    const response = await login(username, password); 
+    if (response.authenticated) {
+      localStorage.setItem('token', response.Authorization); 
       navigate('/');
     } else {
       setError('Login failed. Please check your username and password.');
