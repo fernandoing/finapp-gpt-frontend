@@ -1,39 +1,22 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import { getHistory, deleteHistory, sendMessage } from './services/chatService';
 import Chat from './components/Chat';
 import ChatInput from './components/ChatInput';
 import logo from './assets/FinApp.png';
 import { MdLogout } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
-async function fetchPreviousMessages(token) {
-  const response = await fetch(`${API_URL}/chats`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `${token}`
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  return data.chats;
-}
 
 function App() {
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const welcomeMessage = { text: "🌟 Welcome to your personal AI Financial Advisor!\n I'm here to help you with advice, budgeting, and tracking expenses. Just tell me what you need – whether it's creating a budget or getting financial tips.\n How can I assist you today?", isUser: false };
-  const [messages, setMessages] = useState([welcomeMessage]);
   const [isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState([welcomeMessage]);
+  
   useEffect(() => {
-    fetchPreviousMessages(token)
+    getHistory(token)
       .then(previousMessages => {
         setMessages(prevMessages => [...prevMessages, ...previousMessages]);
       })
@@ -41,39 +24,33 @@ function App() {
   }, []);
 
   const handleSendMessage = async (messageText) => {
-    const newMessage = { text: messageText, isUser: true };
-    setMessages(messages => [...messages, newMessage]);
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      { text: messageText, isUser: true },
+    ]);
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/message`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `${token}`
-        },
-        body: JSON.stringify({ user_input: messageText }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      setMessages(messages => [...messages, { text: data.response, isUser: false }]);
+      const { response } = await sendMessage(messageText, token);
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        { text: response, isUser: false },
+      ]);
     } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
-
-    } finally {
-      setIsLoading(false); 
+      console.error("There was a problem with sending the message:", error);
+    }
+    finally {
+      setIsLoading(false);
     }
   };
 
   const handleClearMessages = () => {
-    setMessages([]); 
-    setMessages(messages => [...messages, welcomeMessage]);
-
+    deleteHistory(token)
+    .then(() => {
+        setMessages([]);
+        setMessages(messages => [...messages, welcomeMessage]);
+      })
+    .catch(error => console.error(error));
   };
 
   const handleLogout = () => {
@@ -97,7 +74,7 @@ function App() {
       <div className="flex flex-col flex-1 max-w-prose mx-auto">
         <Chat messages={messages} isLoading={isLoading} />
         <div className="mt-auto mb-0">
-          <ChatInput onSendMessage={handleSendMessage} onClearMessages={handleClearMessages} isLoading={isLoading}/>
+          <ChatInput onSendMessage={handleSendMessage} onClearMessages={handleClearMessages} isLoading={isLoading} />
         </div>
       </div>
     </div>
