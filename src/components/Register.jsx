@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/FinApp.png';
-
-const LOGIN = import.meta.env.VITE_API_LOGIN;
+import { register } from '../services/chatService';
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -17,18 +16,12 @@ function Register() {
     // Confirm that passwords match before submitting
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
-      return; // Stop the form submission
+      return; // 
     }
-
-    const res = await fetch(`${LOGIN}/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
-    const data = await res.json();
-    if (data.Authorization) {
-      localStorage.setItem('token', data.Authorization);
-      navigate('/app');
+    const response = await register(username, password);
+    if (response.Authorization) {
+      localStorage.setItem('token', response.Authorization);
+      navigate('/');
     } else {
       setError('Registration failed. Please try again.');
     }
